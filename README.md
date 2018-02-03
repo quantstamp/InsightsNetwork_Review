@@ -91,7 +91,7 @@ Oyente reported a potential Transaction-Ordering Dependence (TOD) attack between
 
 Oyente reported that EVM code coverage is `99.6%`. The tool explore almost all the possible paths.
 
-Mythril tool reported that the call a non-zero amount of Ether is sent to an address taken from function arguments in `recipient.transfer(amount)`  (line 78 of function `transfer()`). We believe this to be a false positive, since the function `transfer()` is protectef by `onlyOwner` modifier.
+Mythril tool reported that the a non-zero amount of Ether is sent to an address taken from function arguments in `recipient.transfer(amount)`  (line 78 of function `transfer()`). We believe this to be a false positive, since the function `transfer()` is protected by `onlyOwner` modifier.
 
 # Recommendations
 
