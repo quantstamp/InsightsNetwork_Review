@@ -13,7 +13,7 @@ We also reviewed the instructions provided in the [README.md](https://github.com
 
 ## Methodology
 
-The review was conducted during 2018-Jan-31 thru 2017-Feb-02 by the Quantstamp team, which included senior engineers Kacper Bak and Steven Stewart.
+The review was conducted during 2018-Jan-31 thru 2017-Feb-02 by the Quantstamp team, which included senior engineers Kacper Bak, Steven Stewart, and Alex Murashkin.
 
 Their procedure can be summarized as follows:
 
@@ -87,11 +87,11 @@ We evaluated the coverage report and identified missing test coverage for `else`
 
 Symbolic execution (the Oyente tool) did not detect any vulnerabilities of types Parity Multisig Bug 2, Callstack Depth Attack, Timestamp Dependency, and Re-Entrancy Vulnerability.
 
-Oyente reported a potential Transaction-Ordering Dependence (TOD) attack between `recipient.transfer(amount)` (line 78 of function `transfer()`) and `selfdestruct(owner)` (line 84 of function `selfDestruct()`), however we believe this to be a benign issue. A concern is that the contract is destroyed before the transfer occurs. We do not consider this an issue since both methods may only be called by the contract owner. Furthermore, `selfDestruct()` requires that the balance is 0, transfer could not occur anyway.
+Oyente reported a potential Transaction-Ordering Dependence (TOD) attack between `recipient.transfer(amount)` (line 78 of function `transfer()`) and `selfdestruct(owner)` (line 84 of function `selfDestruct()`), however we believe this to be a benign issue. A concern is that the contract is destroyed before the transfer occurs. We do not consider this an issue since both methods may only be called by the contract owner. Furthermore, `selfDestruct()` requires that the balance is 0, therefore transfer could not occur anyway.
 
-Oyente reported that EVM code coverage is `99.6%`. The tool explore almost all the possible paths.
+Oyente reported that EVM code coverage is `99.6%`. The tool explored almost all the possible paths.
 
-Mythril tool reported that the a non-zero amount of Ether is sent to an address taken from function arguments in `recipient.transfer(amount)`  (line 78 of function `transfer()`). We believe this to be a false positive, since the function `transfer()` is protected by `onlyOwner` modifier.
+Mythril tool reported that a non-zero amount of Ether is sent to an address taken from function arguments in `recipient.transfer(amount)`  (line 78 of function `transfer()`). We believe this to be a false positive, since the function `transfer()` is protected by the modifier `onlyOwner`.
 
 # Recommendations
 
@@ -101,7 +101,7 @@ We noticed that the contract has the boolean field `enabled`. From our understan
 
 ## Code Documentation
 
-We noted that majority of the functions were self-explanatory. Standard documentation tags (such as `@dev`, `@param`, and `@returns`) were missing. We recommend adding these tags for as a best practice and for documenting assumptions.
+We noted that majority of the functions were self-explanatory. Standard documentation tags (such as `@dev`, `@param`, and `@returns`) were missing. We recommend adding these tags as a best practice and for documenting the assumptions.
 
 The functional specification explains that 0.25 ETH <= (the first amount sent) <= 50 ETH. The contract allows for flexibility and does not strictly follow the specification. We do not see any issue, but if the min and max contributions are known upfront, they could be defined as constants in the contract. Alternatively, a short comment explaning the need for flexibility would be helpful.
 
